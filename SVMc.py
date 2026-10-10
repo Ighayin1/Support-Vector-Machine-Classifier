@@ -11,24 +11,22 @@ class Support_Vector_Machine:
         self.w = np.zeros(self.n)
         self.b = 0
         self.X = X
-        self.Y = Y
+        self.Y = np.where(Y <= 0, -1, 1)
 
         #implementing gradient descent
         for i in range(self.iterations):
             self.update_weights()
 
     def update_weights(self):
-        # label encodingy 
-        y_label = np.where(self.Y <= 0, -1, 1)
 
         for index, x_i in enumerate(self.X):
-            condition = y_label[index] * (np.dot(x_i,self.w) + self.b) >= 1
+            condition = self.Y[index] * (np.dot(x_i,self.w) + self.b) >= 1
             if condition:
                 dw = 2 * self.lambda_param * self.w
                 db = 0
             else:
-                dw = 2 * self.lambda_param * self.w -  y_label[index] * x_i
-                db = y_label[index]
+                dw = 2 * self.lambda_param * self.w -  self.Y[index] * x_i
+                db = -self.Y[index]
 
             #updating weights
             self.w = self.w - self.learning_rate * dw
